@@ -1,0 +1,210 @@
+{
+  "schema_version": "self-evolve-v5-deep-pilot-trainval-config-v1",
+  "experiment_id": "self_evolve_v5_deep_pilot_trainval",
+  "base_profile": "retrieval_v8_5_refine_then_lock",
+  "planner_profile": "self_evolve_v4_fullstack_trainval",
+  "knowledge_policy": {
+    "evolution_splits": [
+      "train",
+      "val"
+    ],
+    "test_policy": "recorded_candidate_evaluation_only",
+    "historical_test_experiences_allowed": false,
+    "privileged_reference_runtime_allowed": false
+  },
+  "task_order": [
+    "MoveCube",
+    "PatternLock",
+    "SwingXtimes",
+    "PickXtimes",
+    "PickHighlight",
+    "VideoRepick",
+    "ButtonUnmask",
+    "ButtonUnmaskSwap",
+    "BinFill"
+  ],
+  "episode_sampling": {
+    "dataset_id": "robomme",
+    "datasets": {
+      "robomme": {
+        "loader": {
+          "name": "json_records",
+          "path_template": "{split}/record_dataset_{task}_metadata.json",
+          "records_path": [
+            "records"
+          ],
+          "episode_id_field": "episode",
+          "safe_sampling_fields": [
+            "difficulty"
+          ]
+        },
+        "algorithm": {
+          "name": "stratified_even",
+          "stratum_field": "difficulty",
+          "stratum_order": [
+            "easy",
+            "medium",
+            "hard"
+          ],
+          "stratum_weights": {
+            "easy": 0.5,
+            "medium": 0.25,
+            "hard": 0.25
+          },
+          "remainder_policy": "last_stratum"
+        }
+      }
+    }
+  },
+  "evolution": {
+    "max_rounds": 5,
+    "candidate_pool_size": 30,
+    "train_pool_size": 30,
+    "val_pool_size": 20,
+    "analysis_order": [
+      "deterministic_all_episode_summary",
+      "physical_first_divergence",
+      "task_progress_divergence",
+      "terminal_failure",
+      "multi_problem_clustering",
+      "repair_surface_routing",
+      "representative_model_review",
+      "task_generalization"
+    ],
+    "max_deep_reviews_per_task_split": 12,
+    "duplicate_failure_early_stop": 3
+  },
+  "problem_discovery": {
+    "cluster_policy": "v1_categorical",
+    "min_cluster_support": 2,
+    "max_problem_clusters": 8,
+    "keep_singletons": true,
+    "use_success_counterexamples": true,
+    "primary_problem_by_first_divergence": false,
+    "required_causal_layers": [
+      "physical_first_divergence",
+      "task_progress_divergence",
+      "terminal_failure"
+    ],
+    "combine_failure_sources": [
+      "evolution50",
+      "hard_extension20"
+    ]
+  },
+  "hard_exploration": {
+    "mode": "auto",
+    "trigger_min_success_rate": 0.5,
+    "trigger_max_success_rate": 0.95,
+    "train_count": 12,
+    "val_count": 8,
+    "selection_algorithm": "stratified_even_excluding_consumed_v1",
+    "run_at_most_once": true,
+    "report_separately_from_evolution50": true
+  },
+  "evolution_loop": {
+    "max_attempts_per_problem": 3,
+    "max_total_evolution_rounds": 5,
+    "one_problem_per_round": true,
+    "allow_active_problem_switch": true,
+    "allow_revisit_deferred_problem": true,
+    "same_problem_revision_requires_retrospective": true,
+    "problem_switch_requires_evidence": true,
+    "accepted_experiences_accumulate": true,
+    "candidate_comparison_baseline": "current_working_bundle"
+  },
+  "intervention_policy": {
+    "candidate_format": "typed_intervention_bundle",
+    "prefer_existing_builtin_plugin": true,
+    "allow_prompt_lesson": true,
+    "allow_runtime_criterion": true,
+    "allow_runtime_gate": true,
+    "allow_structured_ledger": true,
+    "allow_retrieval_overlay": true,
+    "allow_action_canonicalizer": true,
+    "allow_reinforcement_overlay": true,
+    "allow_new_python_plugin_after_static_validation": false,
+    "allow_core_harness_patch_after_materialized_commit": true,
+    "runtime_inputs_must_be_observable": true,
+    "mature_v8_5_mutation_forbidden": true
+  },
+  "verification": {
+    "paired_episode_lists_required": true,
+    "require_incremental_bundle_provenance": true,
+    "development_panel": {
+      "minimum_total_attempts": 4,
+      "target_total_attempts": 6,
+      "maximum_total_attempts": 12,
+      "required_splits": [
+        "train",
+        "val"
+      ],
+      "reuse_across_candidate_revisions": true,
+      "reuse_cached_baseline": true
+    },
+    "generalization_panel": {
+      "minimum_total_attempts": 2,
+      "target_total_attempts": 4,
+      "maximum_total_attempts": 8,
+      "required_splits": [
+        "train",
+        "val"
+      ],
+      "disjoint_from_development": true,
+      "unanalysed_before_registration": true
+    },
+    "evolution_acceptance_ladder": [
+      {
+        "tier": "strict",
+        "min_net_improvements": 2,
+        "max_regressions": 0
+      },
+      {
+        "tier": "fallback",
+        "min_net_improvements": 1,
+        "max_regressions": 0,
+        "only_if_no_strict_candidate": true
+      }
+    ],
+    "perfect_verifier_definition": "all_registered_panel_samples_succeed_with_zero_regressions",
+    "generalization_acceptance": {
+      "min_candidate_success_rate": 1.0,
+      "min_net_improvements": 0,
+      "max_regressions": 0
+    },
+    "full_train_val_candidate_rollout_required": false,
+    "offline_acceptance_verifier_mutable_by_candidate": false
+  },
+  "v5_policy": {
+    "require_generalization_before_accept": true,
+    "development_samples_reusable_for_revision": true,
+    "mandatory_retrospective_after_every_verifier": true,
+    "max_behaviorally_equivalent_revisions": 1,
+    "max_activated_no_effect_revisions": 2
+  },
+  "evolution_dataset_gate": {
+    "dataset_name": "robomme_evolution50_dataset",
+    "required_train_episodes": 30,
+    "required_val_episodes": 20,
+    "required_baseline_profile": "self_evolve_v4_fullstack_trainval",
+    "required_baseline_behavior_id": "v8.5-refine-then-lock-empty-intervention-v1",
+    "compatible_baseline_profiles": [
+      "self_evolve_v2_train_active",
+      "self_evolve_v3_train30_val20",
+      "self_evolve_v3_multiproblem_auto_hard20",
+      "self_evolve_v4_fullstack_trainval"
+    ],
+    "require_episode_config_behavior_audit": true,
+    "require_empty_runtime_intervention_bundle": true,
+    "analysis_before_gate_allowed": false
+  },
+  "models": {
+    "experiment_planner": "gpt-5.6-sol",
+    "failure_analyzer": "gpt-5.6-sol",
+    "reasoning_effort": "high"
+  },
+  "analysis_assets": {
+    "system_prompt": "scripts/codex_rollout/prompts/failure_experience_analyzer_system_v5.txt",
+    "output_schema": "scripts/codex_rollout/schemas/failure_experience_analysis_v5.schema.json",
+    "problem_record_converter": "scripts/codex_rollout/prepare_v5_problem_records.py"
+  }
+}

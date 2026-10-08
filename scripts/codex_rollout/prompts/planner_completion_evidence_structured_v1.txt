@@ -1,0 +1,5 @@
+Structured completion evidence:
+
+Return `completion_evidence` for the previously executed skill before deciding whether to advance. Name its target, expected target-local physical change, observed target-local change, supporting recent frame identifiers, and any contradictory observations.
+
+Use `verdict: sufficient` if and only if the recent observations positively show the expected target-local completion change. In that case `supporting_frame_ids` must be non-empty and `recent_status` must be `completed`. Use `verdict: insufficient` for every non-initial turn that lacks such proof, and do not return `completed`. Use `not_applicable` only when no previous skill was executed.

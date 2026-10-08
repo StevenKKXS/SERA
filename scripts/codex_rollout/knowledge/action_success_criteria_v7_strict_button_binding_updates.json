@@ -1,0 +1,43 @@
+{
+  "version": "robomme-action-success-criteria-v7-strict-button-binding-updates",
+  "extends": "action_success_criteria_v6_task_scoped_patches.json",
+  "replace_criteria": [
+    {
+      "criterion_id": "button_unmask_press_local_event",
+      "semantic_action": "press_button",
+      "completion_latch_key": "button_prerequisite",
+      "applies_to_tasks": ["ButtonUnmask", "ButtonUnmaskSwap"],
+      "previous_subtask_patterns": [
+        "^press (?:the )?(?:(?:first|second) )?button(?: at <[0-9]+, [0-9]+>)?$"
+      ],
+      "benchmark_note": "A ButtonUnmask press is complete only when the button cap visibly displaces relative to its stationary base. Container changes are separately recorded as target-binding evidence and never prove button completion.",
+      "success_conditions": [
+        "The gripper reaches and contacts the intended button rather than merely approaching it.",
+        "The button cap visibly travels or becomes depressed relative to the stationary button base during the recent temporal sequence."
+      ],
+      "insufficient_evidence": [
+        "Aligned approach, contact, downstroke, occlusion, or withdrawal without visible cap displacement.",
+        "A container appears, disappears, moves, or changes occlusion.",
+        "The final pose looks plausible but the recent sequence does not show cap travel relative to the base."
+      ],
+      "required_checks": [
+        {
+          "check_id": "button_local_aligned_contact",
+          "question": "Ignoring every container event, does the recent sequence show the gripper reaching and contacting the intended button?"
+        },
+        {
+          "check_id": "visible_button_cap_travel",
+          "question": "Does the recent sequence directly show the button cap displacing or becoming depressed relative to the stationary button base? Contact, occlusion, downstroke, or withdrawal alone must be uncertain or no."
+        }
+      ],
+      "unrelated_scene_policy": "Container events may produce binding_updates but must not change either button-completion verdict.",
+      "transition_policy": {
+        "on_partial_or_uncertain": "continue_same_canonical_button_instruction",
+        "on_satisfied": "advance_immediately_and_latch_prerequisite",
+        "confirmation_retries": 0
+      },
+      "uncertainty_policy": "continue_current_semantic_subtask_without_claiming_completion",
+      "executor_instruction_policy": "repeat_the_canonical_button_instruction_only_until_visible_cap_travel_is_verified"
+    }
+  ]
+}

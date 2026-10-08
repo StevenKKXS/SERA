@@ -1,0 +1,44 @@
+{
+  "version": "robomme-action-success-criteria-v8-visual-downstroke",
+  "extends": "action_success_criteria_v6_task_scoped_patches.json",
+  "replace_criteria": [
+    {
+      "criterion_id": "button_unmask_press_local_event",
+      "semantic_action": "press_button",
+      "completion_latch_key": "button_prerequisite",
+      "applies_to_tasks": ["ButtonUnmask", "ButtonUnmaskSwap"],
+      "previous_subtask_patterns": [
+        "^press (?:the )?(?:(?:first|second) )?button(?: at <[0-9]+, [0-9]+>)?$"
+      ],
+      "benchmark_note": "With vision only, accept a physically meaningful aligned gripper downstroke into the intended button. Visible cap depression is strong but optional when the cap is occluded. Container changes never prove a press.",
+      "success_conditions": [
+        "The gripper becomes aligned with and reaches the intended button rather than a nearby surface.",
+        "After reaching the button, the gripper visibly continues along the button's press direction into a sustained pressing pose; visible cap depression may confirm this but is not required under gripper occlusion."
+      ],
+      "insufficient_evidence": [
+        "The gripper only approaches, hovers, or remains separated from the intended button.",
+        "There is brief overlap or ambiguous contact but no continued motion into the button and no sustained pressing pose.",
+        "Only withdrawal is visible without earlier aligned contact and downstroke in the recent sequence.",
+        "A container appears, disappears, moves, or changes occlusion."
+      ],
+      "required_checks": [
+        {
+          "check_id": "button_local_aligned_contact",
+          "question": "Ignoring every container event, does the recent sequence show the gripper aligned with and reaching the intended button rather than a nearby surface?"
+        },
+        {
+          "check_id": "aligned_gripper_downstroke",
+          "question": "After reaching the intended button, does the gripper visibly continue along the press direction into it and reach a sustained pressing pose relative to the stationary button base? Visible cap depression is sufficient but not required when the gripper occludes the cap."
+        }
+      ],
+      "unrelated_scene_policy": "Container events may produce binding_updates but must not change either button-completion verdict.",
+      "transition_policy": {
+        "on_partial_or_uncertain": "continue_same_canonical_button_instruction",
+        "on_satisfied": "advance_immediately_and_latch_prerequisite",
+        "confirmation_retries": 0
+      },
+      "uncertainty_policy": "continue_current_semantic_subtask_only_when_aligned_contact_or_downstroke_is_missing",
+      "executor_instruction_policy": "advance_after_one_visually_complete_aligned_contact_and_downstroke_event"
+    }
+  ]
+}

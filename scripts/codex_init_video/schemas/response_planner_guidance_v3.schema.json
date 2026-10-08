@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "video_description",
+    "detailed_task_description",
+    "planner_guidance"
+  ],
+  "properties": {
+    "video_description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "detailed_task_description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "planner_guidance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixed_facts",
+        "state_to_track",
+        "progress_rules",
+        "execution_constraints"
+      ],
+      "properties": {
+        "fixed_facts": {
+          "$ref": "#/$defs/guidanceItems"
+        },
+        "state_to_track": {
+          "$ref": "#/$defs/guidanceItems"
+        },
+        "progress_rules": {
+          "$ref": "#/$defs/guidanceItems"
+        },
+        "execution_constraints": {
+          "$ref": "#/$defs/guidanceItems"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "guidanceItems": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      }
+    }
+  }
+}

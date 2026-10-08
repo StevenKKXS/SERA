@@ -1,0 +1,23 @@
+Planner round: {round_index}
+
+Fixed task description obtained from the initial demonstration:
+{detailed_task_description}
+
+Immutable planner guidance obtained from init processing:
+{planner_guidance}
+
+Skill actually executed during the newest observations:
+{previous_subtask}
+
+Control feedback about that execution:
+{control_feedback}
+
+Executor candidates retrieved from the frozen global vocabulary:
+{allowed_executor_skills}
+
+Recent image manifest, in attachment order:
+{image_manifest}
+
+Image identifiers beginning with `r_f` are chronological front-camera observations. Identifiers beginning with `r_w` are synchronized wrist observations. Coordinates use the full recent front image with x_norm and y_norm in [0, 999]. Use `<point_1>` and `<point_2>` only for their corresponding point objects.
+
+Use your persistent episode conversation as memory. Judge the executed skill and select exactly one current candidate. Return only the required JSON object.

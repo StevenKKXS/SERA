@@ -1,0 +1,52 @@
+{
+  "version": "robomme-action-success-criteria-v12-self-evolve-swing",
+  "extends": "action_success_criteria_v11_self_evolve_movecube.json",
+  "replace_criteria": [],
+  "add_criteria": [
+    {
+      "criterion_id": "swing_expected_target_activation_ledger",
+      "semantic_action": "swing_visit_expected_side",
+      "applies_to_tasks": ["SwingXtimes"],
+      "previous_subtask_patterns": [
+        "^move to the top of the (?:right|left)-side target(?: at <[0-9]+, [0-9]+>)? for the (?:first|second|third) time$"
+      ],
+      "success_conditions": [
+        "The named side in the executed instruction is the currently expected side in the chronological right-then-left cycle ledger.",
+        "A recent observation positively shows that named target activating rather than remaining gray or merely being approached.",
+        "The task cube, not an empty gripper, is visibly controlled at the target activation.",
+        "The activation is a distinct new expected-side event; a repeated view of the prior side's red state does not increment the ledger."
+      ],
+      "insufficient_evidence": [
+        "The gripper or cube only approaches, overlaps, or aligns with the named target without a visible activation event.",
+        "Only the previously visited target is red, or the named target is gray or occluded.",
+        "The arm reaches the named side after the cube was dropped or left at the previous target.",
+        "Planner prose, an intended ordinal, or disappearance of an old highlight is used as evidence for a new visit."
+      ],
+      "required_checks": [
+        {
+          "check_id": "swing_expected_side_matches_ledger",
+          "question": "Does the executed target side match the next side required by a chronological right-then-left ledger, without skipping or double-counting an ordinal?"
+        },
+        {
+          "check_id": "swing_named_target_positively_activated",
+          "question": "Do recent observations positively show the named target activating, rather than only proximity, overlap, or an old red state?"
+        },
+        {
+          "check_id": "swing_cube_controlled_at_activation",
+          "question": "Is the task cube visibly controlled by the gripper when that target activation occurs?"
+        },
+        {
+          "check_id": "swing_distinct_visit_not_reused",
+          "question": "Is this a distinct new expected-side activation rather than repeated evidence from the previously counted visit?"
+        }
+      ],
+      "transition_policy": {
+        "on_partial_or_uncertain": "continue_same_canonical_expected_side_visit",
+        "on_satisfied": "append_exactly_one_activation_to_ledger_then_allow_next_expected_side",
+        "maximum_blocked_transition_attempts": 1
+      },
+      "uncertainty_policy": "do_not_advance_ordinal_release_or_button_phase_without_positive_expected_side_activation",
+      "executor_instruction_policy": "use_only_the_existing_canonical_move_to_expected_side_target_skill"
+    }
+  ]
+}

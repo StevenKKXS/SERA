@@ -1,0 +1,116 @@
+{
+  "version": "robomme-action-success-criteria-v14-self-evolve-counting-ledger",
+  "extends": "action_success_criteria_v13_self_evolve_swing_binding.json",
+  "replace_criteria": [],
+  "add_criteria": [
+    {
+      "criterion_id": "counting_requested_cube_pickup",
+      "semantic_action": "counting_pickup_and_qualifying_lift",
+      "applies_to_tasks": ["PickXtimes", "BinFill"],
+      "previous_subtask_patterns": [
+        "^pick up the (?:(?:first|second|third|fourth|fifth) )?(?:red|green|blue) cube(?: at <[0-9]+, [0-9]+>)?(?: for the (?:first|second|third|fourth|fifth) time)?$"
+      ],
+      "success_conditions": [
+        "The requested-color cube is visibly retained between the fingers and moves with the gripper across current frames.",
+        "The cube is visibly clear of its prior support; for PickXtimes the pickup command must provide physical lift margin before placement.",
+        "Contact, occlusion, a closed gripper, or motion of the gripper alone is not a verified pickup."
+      ],
+      "insufficient_evidence": [
+        "The cube remains supported by the table or target.",
+        "The gripper closed near the cube but the cube is not visibly moving with it.",
+        "The visible held cube has the wrong color."
+      ],
+      "required_checks": [
+        {
+          "check_id": "counting_requested_cube_retained",
+          "question": "Is the requested-color cube visibly retained between the fingers and moving with the gripper?"
+        },
+        {
+          "check_id": "counting_cube_clear_of_support",
+          "question": "Is the cube visibly clear of its previous table or target support rather than merely contacted or occluded?"
+        }
+      ],
+      "transition_policy": {
+        "on_partial_or_uncertain": "continue_the_same_requested_cube_pickup_and_lift",
+        "on_satisfied": "allow_the_matching_release_phase",
+        "maximum_blocked_transition_attempts": 2
+      },
+      "uncertainty_policy": "do_not_start_a_release_or_increment_a_count_without_visible_held_cube_evidence",
+      "executor_instruction_policy": "reuse_the_existing_requested_color_pickup_skill"
+    },
+    {
+      "criterion_id": "pickxtimes_verified_target_release",
+      "semantic_action": "pickxtimes_counted_release",
+      "applies_to_tasks": ["PickXtimes"],
+      "previous_subtask_patterns": [
+        "^place the (?:red|green|blue) cube onto the target(?: at <[0-9]+, [0-9]+>)?$"
+      ],
+      "success_conditions": [
+        "The same cube from the verified pickup is no longer held and is visibly supported by the designated target.",
+        "For only the first repetition, the released pi0.5 place skill may perform the integrated pickup, lift, and release because the frozen initial top-5 vocabulary does not always expose a same-color first-pickup template.",
+        "A completed repetition is one ordered pickup/lift then target-release event; prose count claims alone provide no credit."
+      ],
+      "insufficient_evidence": [
+        "The cube remains airborne or in the fingers.",
+        "The cube was lowered but is not visibly supported by the target.",
+        "There was no verified pickup/lift event for this repetition, except inside the single integrated first-place skill."
+      ],
+      "required_checks": [
+        {
+          "check_id": "pickxtimes_cube_released",
+          "question": "Is the cube visibly no longer held, with open separated fingers?"
+        },
+        {
+          "check_id": "pickxtimes_cube_supported_by_target",
+          "question": "Is that cube visibly resting on the designated target after the verified lift?"
+        }
+      ],
+      "transition_policy": {
+        "on_partial_or_uncertain": "continue_the_same_target_placement",
+        "on_satisfied": "record_exactly_one_repetition_then_choose_the_next_pickup_or_final_button",
+        "maximum_blocked_transition_attempts": 2
+      },
+      "uncertainty_policy": "never_increment_from_text_memory_without_current_release_evidence_and_allow_the_integrated_place_exception_only_for_repetition_one",
+      "executor_instruction_policy": "reuse_the_existing_target_placement_skill"
+    },
+    {
+      "criterion_id": "binfill_verified_bin_release",
+      "semantic_action": "binfill_counted_release",
+      "applies_to_tasks": ["BinFill"],
+      "previous_subtask_patterns": [
+        "^put it into the bin(?: at <[0-9]+, [0-9]+>)?$"
+      ],
+      "success_conditions": [
+        "The same requested-color cube from the verified pickup crosses into the bin interior and is released there.",
+        "The gripper is visibly empty after release; the dark bin interior alone is not used to recount all contents.",
+        "The grounded bin point is inside the bin opening and not on the adjacent stop button."
+      ],
+      "insufficient_evidence": [
+        "No cube was verified held before the put command.",
+        "The cube remains in the gripper, lands outside the bin, or the release location is occluded without a visible crossing event.",
+        "The point or gripper trajectory is centered on the stop button rather than the bin opening."
+      ],
+      "required_checks": [
+        {
+          "check_id": "binfill_cube_crossed_bin_rim",
+          "question": "Did the verified held cube visibly cross the bin rim into its interior?"
+        },
+        {
+          "check_id": "binfill_cube_released_inside",
+          "question": "Is the gripper now visibly empty after releasing that cube inside the bin?"
+        },
+        {
+          "check_id": "binfill_point_not_button",
+          "question": "Is the bin grounding visibly inside the dark bin opening and distinct from the nearby gray stop button?"
+        }
+      ],
+      "transition_policy": {
+        "on_partial_or_uncertain": "continue_or_recover_the_same_verified_cube_placement_without_claiming_credit",
+        "on_satisfied": "record_one_release_for_the_active_color_then_choose_a_still_under_quota_color_or_final_button",
+        "maximum_blocked_transition_attempts": 2
+      },
+      "uncertainty_policy": "never_increment_a_color_quota_from_a_planned_command_or_bin_snapshot_alone",
+      "executor_instruction_policy": "reuse_the_existing_bin_placement_skill_with_a_current_front_frame_bin_interior_point"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+Fixed task description obtained from the initial demonstration:
+{detailed_task_description}
+
+Immutable planner guidance obtained from init processing:
+{planner_guidance}
+
+Executor candidates retrieved from the frozen global vocabulary:
+{allowed_executor_skills}
+
+Previous cumulative progress:
+{previous_progress}
+
+Skill executed during the recent observations:
+{previous_subtask}
+
+Harness-maintained target bindings and irreversible completion latches:
+{target_identity_state}
+
+Action-specific success criterion for that previous skill:
+{action_success_criterion}
+
+Harness-maintained retrieval/rethinking control state:
+{exploration_control_state}
+
+Relevant episode-local executor lessons:
+{relevant_lessons}
+
+Recent image manifest, in attachment order:
+{image_manifest}
+
+Image identifiers beginning with `r_f` are chronological front-camera observations. Identifiers beginning with `r_w` are synchronized wrist observations.
+
+Evaluate the previous skill and its completion criterion from current pixels. Separately report target_identity for the color-targeted pickup currently executing or proposed as the next skill. Also emit binding_updates for every directly observed color-to-container relation in this turn, even while another action such as pressing a button is active; use an empty list when there is no new direct evidence. A binding based only on inference must not be emitted as a binding_update. If a lifted container exposes the wrong color, choose the canonical put-down recovery skill. Never reopen an action named in completed_action_latches. Update progress, choose one retrieved template_id, copy its canonical_template exactly, and provide the required grounded points.
+
+Coordinates are normalized to the full recent front image: x_norm and y_norm range from 0 to 999. Use <point_1> and <point_2> only for their corresponding points.
+
+Return only the JSON object defined by the output schema.

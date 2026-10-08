@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "video_description",
+    "detailed_task_description"
+  ],
+  "properties": {
+    "video_description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "detailed_task_description": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

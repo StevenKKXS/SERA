@@ -1,0 +1,6 @@
+Task description:
+{task_description}
+
+The attached frames are the complete initial demonstration video downsampled from 30 FPS to 10 FPS. They are provided in chronological order and labeled with their original frame identifiers.
+
+Analyze the video and return the result.

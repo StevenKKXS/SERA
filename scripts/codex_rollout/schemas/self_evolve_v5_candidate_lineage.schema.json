@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "candidate_id", "problem_id", "revision", "parent_candidate_id", "inherited_component_ids", "modified_component_ids", "preserved_invariants", "behavioral_delta", "revision_reason"],
+  "properties": {
+    "schema_version": {"const": "self-evolve-v5-candidate-lineage-v1"},
+    "candidate_id": {"type": "string", "minLength": 1},
+    "problem_id": {"type": "string", "minLength": 1},
+    "revision": {"type": "integer", "minimum": 1},
+    "parent_candidate_id": {"type": ["string", "null"]},
+    "inherited_component_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "modified_component_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "preserved_invariants": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "behavioral_delta": {"type": "string", "minLength": 1},
+    "revision_reason": {"type": "string", "minLength": 1}
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": "self-evolve-runtime-memory-v1",
+  "memory_id": "retrieval_v8_5_self_evolve_v2",
+  "revision": 2,
+  "base_profile": "retrieval_v8_5_refine_then_lock",
+  "experiences": [
+    {
+      "experience_id": "experience_121bab65ef1b",
+      "revision": 1,
+      "status": "candidate",
+      "task_scope": ["MoveCube"],
+      "situation_class": "tool_pickup_unverified",
+      "criterion_id": "move_cube_peg_pickup_held_motion",
+      "intervention": {
+        "type": "bounded_transition_gate",
+        "max_blocked_transitions": 2
+      }
+    },
+    {
+      "experience_id": "experience_73f95386b41c",
+      "revision": 1,
+      "status": "candidate",
+      "task_scope": ["SwingXtimes"],
+      "situation_class": "ordered_target_visit_unverified",
+      "criterion_id": "swing_expected_target_activation_ledger",
+      "intervention": {
+        "type": "bounded_transition_gate",
+        "max_blocked_transitions": 1
+      }
+    }
+  ]
+}

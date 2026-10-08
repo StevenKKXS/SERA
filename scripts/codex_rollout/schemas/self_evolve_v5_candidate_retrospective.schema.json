@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "candidate_id", "problem_id", "panel_id", "panel_role", "outcome_summary", "activation_audit", "hypothesis_assessment", "implementation_assessment", "failure_type", "knowledge_gained", "recommended_action", "next_revision", "switch_justification"],
+  "properties": {
+    "schema_version": {"const": "self-evolve-v5-candidate-retrospective-v1"},
+    "candidate_id": {"type": "string", "minLength": 1},
+    "problem_id": {"type": "string", "minLength": 1},
+    "panel_id": {"type": "string", "minLength": 1},
+    "panel_role": {"enum": ["development", "generalization"]},
+    "outcome_summary": {"type": "object"},
+    "activation_audit": {
+      "type": "object",
+      "required": ["status", "evidence"],
+      "properties": {
+        "status": {"enum": ["activated", "partially_activated", "not_activated", "not_applicable", "unknown"]},
+        "evidence": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "hypothesis_assessment": {"enum": ["supported", "weakened", "rejected", "inconclusive"]},
+    "implementation_assessment": {"enum": ["correct", "wiring_failure", "partial", "unknown"]},
+    "failure_type": {"enum": ["none", "wiring_failure", "underpowered_repair", "side_effect_regression", "hypothesis_rejected", "capability_unavailable", "inconclusive"]},
+    "knowledge_gained": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "recommended_action": {"enum": ["promote_to_generalization", "accept", "revise_same_problem", "switch_problem", "retain_fallback", "unactionable", "hypothesis_rejected"]},
+    "next_revision": {"type": ["object", "null"]},
+    "switch_justification": {"type": ["object", "null"]}
+  }
+}

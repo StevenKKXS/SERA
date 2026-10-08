@@ -1,0 +1,53 @@
+{
+  "schema_version": "self-evolve-runtime-memory-v1",
+  "memory_id": "retrieval_v8_5_self_evolve_v6",
+  "revision": 6,
+  "base_profile": "retrieval_v8_5_refine_then_lock",
+  "experiences": [
+    {
+      "experience_id": "experience_121bab65ef1b",
+      "revision": 1,
+      "status": "candidate",
+      "task_scope": ["MoveCube"],
+      "situation_class": "tool_pickup_unverified",
+      "criterion_id": "move_cube_peg_pickup_held_motion",
+      "intervention": {"type": "bounded_transition_gate", "max_blocked_transitions": 2}
+    },
+    {
+      "experience_id": "experience_45f8bc91a217",
+      "revision": 1,
+      "status": "candidate",
+      "task_scope": ["SwingXtimes"],
+      "situation_class": "target_side_grounding_swap",
+      "criterion_id": "swing_target_side_visual_binding",
+      "intervention": {"type": "bounded_transition_gate", "max_blocked_transitions": 2}
+    },
+    {
+      "experience_id": "experience_5986cd839271",
+      "revision": 3,
+      "status": "candidate",
+      "task_scope": ["PickXtimes", "BinFill"],
+      "situation_class": "counting_exact_next_ordinal_pickup_required_and_verified",
+      "criterion_id": "counting_requested_cube_pickup",
+      "intervention": {"type": "bounded_transition_gate", "max_blocked_transitions": 2}
+    },
+    {
+      "experience_id": "experience_a1dbe85fdc42",
+      "revision": 1,
+      "status": "candidate",
+      "task_scope": ["PickXtimes"],
+      "situation_class": "pickxtimes_unverified_repetition_increment",
+      "criterion_id": "pickxtimes_verified_target_release",
+      "intervention": {"type": "bounded_transition_gate", "max_blocked_transitions": 2}
+    },
+    {
+      "experience_id": "experience_c752d0b683f4",
+      "revision": 1,
+      "status": "candidate",
+      "task_scope": ["BinFill"],
+      "situation_class": "binfill_unverified_color_increment",
+      "criterion_id": "binfill_verified_bin_release",
+      "intervention": {"type": "bounded_transition_gate", "max_blocked_transitions": 2}
+    }
+  ]
+}

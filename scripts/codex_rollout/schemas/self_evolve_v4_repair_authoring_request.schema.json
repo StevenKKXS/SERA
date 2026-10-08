@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "skill_name", "task", "problem_id", "problem_cluster", "analysis_inputs", "first_divergence_evidence", "suggested_component_types", "selection_policy", "runtime_identity_policy", "offline_acceptance_verifier_mutable"],
+  "properties": {
+    "schema_version": {"const": "self-evolve-v4-repair-authoring-request-v1"},
+    "skill_name": {"const": "self-evolve-intervention-author"},
+    "task": {"type": "string", "minLength": 1},
+    "problem_id": {"type": "string", "minLength": 1},
+    "problem_cluster": {"type": "object"},
+    "analysis_inputs": {"type": "array", "minItems": 1},
+    "first_divergence_evidence": {"type": "array", "minItems": 1},
+    "suggested_component_types": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "selection_policy": {"type": "string", "minLength": 1},
+    "runtime_identity_policy": {"const": "task_scoped_episode_identity_forbidden"},
+    "offline_acceptance_verifier_mutable": {"const": false}
+  }
+}

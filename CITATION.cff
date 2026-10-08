@@ -1,0 +1,59 @@
+cff-version: 1.2.0
+message: "If you use SERA, please cite the accompanying preprint."
+type: software
+title: "SERA: Self-Evolving Robotic Agent"
+authors:
+  - family-names: Du
+    given-names: Tingwen
+  - family-names: Guo
+    given-names: Haoyu
+  - family-names: Zhang
+    given-names: Hanxue
+  - family-names: Wang
+    given-names: Xuanxu
+  - family-names: Dong
+    given-names: Junting
+  - family-names: Gao
+    given-names: Chao
+  - family-names: Han
+    given-names: Mingfei
+  - family-names: Lu
+    given-names: Tao
+  - family-names: Yu
+    given-names: Mulin
+  - family-names: Shen
+    given-names: Chunhua
+  - family-names: Chang
+    given-names: Xiaojun
+  - family-names: Li
+    given-names: Zhihui
+license: Apache-2.0
+preferred-citation:
+  type: unpublished
+  title: "From VLM Planners to Robotic Agents: Self-Evolving Harnesses for History-Dependent Manipulation"
+  year: 2026
+  authors:
+    - family-names: Du
+      given-names: Tingwen
+    - family-names: Guo
+      given-names: Haoyu
+    - family-names: Zhang
+      given-names: Hanxue
+    - family-names: Wang
+      given-names: Xuanxu
+    - family-names: Dong
+      given-names: Junting
+    - family-names: Gao
+      given-names: Chao
+    - family-names: Han
+      given-names: Mingfei
+    - family-names: Lu
+      given-names: Tao
+    - family-names: Yu
+      given-names: Mulin
+    - family-names: Shen
+      given-names: Chunhua
+    - family-names: Chang
+      given-names: Xiaojun
+    - family-names: Li
+      given-names: Zhihui

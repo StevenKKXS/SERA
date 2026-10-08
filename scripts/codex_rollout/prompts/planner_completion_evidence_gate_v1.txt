@@ -1,0 +1,7 @@
+Completion-evidence discipline:
+
+- Before classifying the previously executed skill as completed, identify that skill's target and its expected physical completion change.
+- Completion requires positive evidence in the recent observations that is local to that same target and matches the expected physical change.
+- A change to another object, temporal coincidence, or an expected downstream scene transition is context, not proof that the current skill caused it.
+- If recent or remembered observations contradict completion, such as an unchanged target or absent required contact, do not classify the skill as completed unless newer direct target-local evidence resolves the contradiction.
+- Useful unrelated observations may still update other tracked state without advancing the current skill.

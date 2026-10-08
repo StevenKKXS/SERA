@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "video_description",
+    "detailed_task_description",
+    "keyframes"
+  ],
+  "properties": {
+    "video_description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "detailed_task_description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "keyframes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "frame_id",
+          "reason"
+        ],
+        "properties": {
+          "frame_id": {
+            "type": "string",
+            "pattern": "^i_f[0-9]+$"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

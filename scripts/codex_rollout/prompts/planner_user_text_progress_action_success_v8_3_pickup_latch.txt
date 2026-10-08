@@ -1,0 +1,34 @@
+Fixed task description obtained from the initial demonstration:
+{detailed_task_description}
+
+Immutable planner guidance obtained from init processing:
+{planner_guidance}
+
+Executor candidates retrieved from the frozen global vocabulary:
+{allowed_executor_skills}
+
+Previous cumulative progress:
+{previous_progress}
+
+Skill executed during the recent observations:
+{previous_subtask}
+
+Action-specific success criterion for that previous skill:
+{action_success_criterion}
+
+Harness-maintained retrieval/rethinking control state:
+{exploration_control_state}
+
+Relevant episode-local executor lessons:
+{relevant_lessons}
+
+Recent image manifest, in attachment order:
+{image_manifest}
+
+Image identifiers beginning with `r_f` are chronological front-camera observations. Identifiers beginning with `r_w` are synchronized wrist observations.
+
+Classify the effect of the previous skill and evaluate completion_check honestly from the current synchronized observations. If a criterion contains harness_evidence_state, use it only as cross-chunk state: completion_latched permits advancing unless the current chunk explicitly proves regression, while a candidate streak only supports the sustained-evidence check. If no latch applies, do not declare completion or choose a successor unless every current required check is yes. If no criterion is supplied, use baseline visual judgment. Update the self-contained progress and choose one retrieved template_id. Copy its canonical_template exactly and provide exactly its required number of grounded points. Never write an instruction outside the candidate set.
+
+Coordinates are normalized to the full recent front image: x_norm and y_norm range from 0 to 999. Use <point_1> and <point_2> only for their corresponding points.
+
+Return only the JSON object defined by the output schema.

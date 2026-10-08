@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "recent_status",
+    "recent_outcome",
+    "refine_check",
+    "updated_progress",
+    "skill_key",
+    "execution_state",
+    "instruction_strategy",
+    "current_subtask_template",
+    "points"
+  ],
+  "properties": {
+    "recent_status": {
+      "type": "string",
+      "enum": ["initial", "progressing", "completed", "uncertain", "stagnant", "regressed"]
+    },
+    "recent_outcome": {"type": "string", "minLength": 1, "maxLength": 320},
+    "refine_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["criterion_id", "decision", "checks", "reason"],
+      "properties": {
+        "criterion_id": {"type": "string", "minLength": 1, "maxLength": 80},
+        "decision": {
+          "type": "string",
+          "enum": ["satisfied", "not_satisfied", "uncertain", "not_applicable"]
+        },
+        "checks": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["check_id", "verdict", "evidence"],
+            "properties": {
+              "check_id": {"type": "string", "pattern": "^[a-z][a-z0-9_]{0,79}$"},
+              "verdict": {"type": "string", "enum": ["yes", "no", "uncertain"]},
+              "evidence": {"type": "string", "minLength": 1, "maxLength": 240}
+            }
+          }
+        },
+        "reason": {"type": "string", "minLength": 1, "maxLength": 320}
+      }
+    },
+    "updated_progress": {"type": "string", "minLength": 1, "maxLength": 1600},
+    "skill_key": {"type": "string", "pattern": "^skill_[0-9a-f]{12}$"},
+    "execution_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["held_object", "object_support", "gripper_state"],
+      "properties": {
+        "held_object": {"type": "string", "enum": ["none", "cube", "container", "peg", "tool", "other", "unknown"]},
+        "object_support": {"type": "string", "enum": ["airborne", "table", "target", "held_unknown", "not_applicable", "unknown"]},
+        "gripper_state": {"type": "string", "enum": ["open", "closed", "unknown"]}
+      }
+    },
+    "instruction_strategy": {
+      "type": "string",
+      "enum": ["normal", "reground", "retry_canonical", "reuse_lesson", "prerequisite", "advance_skill", "catalog_backoff"]
+    },
+    "current_subtask_template": {"type": "string", "minLength": 1, "maxLength": 240},
+    "points": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "object_description", "source_frame_id", "x_norm", "y_norm"],
+        "properties": {
+          "id": {"type": "string", "enum": ["point_1", "point_2"]},
+          "object_description": {"type": "string", "minLength": 1, "maxLength": 100},
+          "source_frame_id": {"type": "string", "pattern": "^r_f[0-9]+$"},
+          "x_norm": {"type": "integer", "minimum": 0, "maximum": 999},
+          "y_norm": {"type": "integer", "minimum": 0, "maximum": 999}
+        }
+      }
+    }
+  }
+}

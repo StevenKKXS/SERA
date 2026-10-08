@@ -1,0 +1,149 @@
+{
+  "version": "robomme-action-success-criteria-v6-task-scoped-patches",
+  "criteria": [
+    {
+      "criterion_id": "unmask_pickup_identity_and_separation",
+      "semantic_action": "pickup_container",
+      "applies_to_tasks": [
+        "VideoUnmask",
+        "VideoUnmaskSwap",
+        "ButtonUnmask",
+        "ButtonUnmaskSwap"
+      ],
+      "previous_subtask_patterns": [
+        "^pick up the container(?: at <[0-9]+, [0-9]+>)?(?: that hides the (?:red|green|blue) cube)?$"
+      ],
+      "benchmark_note": "This is an Unmask-specific completion patch. A partial lift is still progress on the same pickup. Advance immediately once the same bound container is securely airborne and the requested cube is fully and persistently separated from it; do not request a second completed pickup for confirmation.",
+      "success_conditions": [
+        "The moving container is the same container bound before the hazardous pickup was issued.",
+        "The newly exposed cube is unambiguously the requested color; unknown color is not a match.",
+        "The requested cube is fully exposed and a clear persistent visual separation exists between it and the lifted container.",
+        "The bound container moves rigidly with the closed gripper and remains securely airborne across multiple recent observations."
+      ],
+      "insufficient_evidence": [
+        "A container is airborne but its identity differs from the bound target or cannot be related to the bound target.",
+        "The revealed cube color is unknown, ambiguous, or different from the requested color.",
+        "The cube is only a sliver, still overlapped by the container, or lacks a persistent visible gap.",
+        "The container only slides, tilts, or briefly moves in one ambiguous frame."
+      ],
+      "required_checks": [
+        {
+          "check_id": "same_bound_container",
+          "question": "Is the moving or held container the same target identity that was bound before this pickup began?"
+        },
+        {
+          "check_id": "requested_cube_color_matches",
+          "question": "Is the newly exposed cube unambiguously the requested color stored in active_target_binding?"
+        },
+        {
+          "check_id": "full_persistent_cube_container_separation",
+          "question": "Is the requested cube fully visible with a clear separation from the container that persists across several recent frames?"
+        },
+        {
+          "check_id": "secure_sustained_airborne_hold",
+          "question": "Does the same bound container move rigidly with the closed gripper and remain securely airborne across several recent frames?"
+        }
+      ],
+      "wrong_target_recovery": {
+        "trigger_check_id": "requested_cube_color_matches",
+        "trigger_verdict": "no",
+        "allowed_successor_patterns": ["^put down the container$"]
+      },
+      "transition_policy": {
+        "on_partial_or_uncertain": "continue_same_canonical_pickup",
+        "on_satisfied": "advance_immediately",
+        "confirmation_retries": 0
+      },
+      "uncertainty_policy": "continue_current_pickup_without_advancing_task_phase",
+      "executor_instruction_policy": "repeat_canonical_pickup_until_strictly_verified_or_put_down_a_verified_wrong_target"
+    },
+    {
+      "criterion_id": "unmask_put_down_stable_release",
+      "semantic_action": "put_down_container",
+      "applies_to_tasks": [
+        "VideoUnmask",
+        "VideoUnmaskSwap",
+        "ButtonUnmask",
+        "ButtonUnmaskSwap"
+      ],
+      "previous_subtask_patterns": ["^put down the container$"],
+      "benchmark_note": "This is an Unmask-specific release patch. Opening the gripper alone is not release. Advance immediately after the container is table-supported, decoupled from the withdrawing gripper, and stable.",
+      "success_conditions": [
+        "The previously held container is visibly supported by the table rather than airborne or stuck to the gripper.",
+        "The gripper is visibly open.",
+        "The container no longer follows the gripper as the gripper withdraws and a visible gap develops.",
+        "The released container remains stationary across multiple recent frames."
+      ],
+      "insufficient_evidence": [
+        "The fingers open but the container remains airborne, wedged, or coupled to the gripper.",
+        "The container is only touching the table transiently and still moves with the gripper.",
+        "Release is inferred from one occluded frame without later stationary support evidence."
+      ],
+      "required_checks": [
+        {
+          "check_id": "container_table_supported",
+          "question": "Is the previously held container clearly supported by the table?"
+        },
+        {
+          "check_id": "gripper_visibly_open",
+          "question": "Is the gripper visibly open after placing the container?"
+        },
+        {
+          "check_id": "container_decoupled_with_gap",
+          "question": "Does the container remain behind while the gripper withdraws, with a visible gap between them?"
+        },
+        {
+          "check_id": "released_container_stable",
+          "question": "Does the table-supported container remain stationary across multiple recent frames?"
+        }
+      ],
+      "transition_policy": {
+        "on_partial_or_uncertain": "continue_same_canonical_put_down",
+        "on_satisfied": "advance_immediately",
+        "confirmation_retries": 0
+      },
+      "uncertainty_policy": "repeat_canonical_put_down",
+      "executor_instruction_policy": "repeat_canonical_put_down_until_stable_release"
+    },
+    {
+      "criterion_id": "button_unmask_press_local_event",
+      "semantic_action": "press_button",
+      "applies_to_tasks": [
+        "ButtonUnmask",
+        "ButtonUnmaskSwap"
+      ],
+      "previous_subtask_patterns": [
+        "^press (?:the )?(?:(?:first|second) )?button(?: at <[0-9]+, [0-9]+>)?$"
+      ],
+      "benchmark_note": "This is a ButtonUnmask-specific evidence patch. Judge only the button-local temporal interaction. Container appearance, disappearance, motion, or cover changes are unrelated scene events and never prove that the button was pressed.",
+      "success_conditions": [
+        "Within the recent sequence, the gripper becomes aligned with and reaches the intended button.",
+        "The sequence contains a physically consistent press event: visible cap travel, or aligned approach/contact/downstroke followed by withdrawal without evidence of a miss.",
+        "The final frame may show the gripper already withdrawn; completion is a temporal event, not a required final contact pose."
+      ],
+      "insufficient_evidence": [
+        "A container appears, disappears, moves, or changes occlusion without a button-local press event.",
+        "The gripper only approaches, hovers, or withdraws without aligned contact/downstroke evidence.",
+        "The apparent interaction is visibly offset from the intended button."
+      ],
+      "required_checks": [
+        {
+          "check_id": "button_local_press_like_interaction",
+          "question": "Ignoring every container or cover change, does the recent sequence show an approach/contact/downstroke interaction aligned with the intended button?"
+        },
+        {
+          "check_id": "physically_consistent_press_completion",
+          "question": "Ignoring the final contact pose, does the temporal sequence show visible cap travel or an aligned downstroke followed by withdrawal without evidence of a miss?"
+        }
+      ],
+      "unrelated_scene_policy": "Container appearance or motion may update target identity memory, but it must not change either button-completion verdict.",
+      "transition_policy": {
+        "on_partial_or_uncertain": "continue_same_canonical_button_instruction",
+        "on_satisfied": "advance_immediately",
+        "confirmation_retries": 0
+      },
+      "uncertainty_policy": "continue_current_semantic_subtask",
+      "executor_instruction_policy": "repeat_canonical_button_instruction_only_when_the_local_press_event_is_not_yet_satisfied"
+    }
+  ]
+}

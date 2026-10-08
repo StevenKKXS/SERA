@@ -1,0 +1,10 @@
+numpy>=1.26.4,<2
+pillow>=11.0.0
+imageio>=2.36.1
+imageio-ffmpeg>=0.5.1
+opencv-python>=4.10.0.84,<4.12
+tqdm>=4.66
+setuptools==80.9.0
+torch==2.9.1
+torchvision==0.24.1
+git+https://github.com/YinpeiDai/ManiSkill.git@07be6fbc66350ddca200abfb0a11b692f078f7fd

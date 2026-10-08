@@ -1,0 +1,12 @@
+Task name:
+{task_name}
+
+Official task specification:
+{task_specification}
+
+Episode instruction:
+{task_description}
+
+{video_context}
+
+Analyze the available information and return the result.

@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "candidate_id",
+    "revision",
+    "status",
+    "problem_id",
+    "task_scope",
+    "base_profile",
+    "diagnosis",
+    "components",
+    "authoring"
+  ],
+  "properties": {
+    "schema_version": {"const": "self-evolve-v4-candidate-intervention-v1"},
+    "candidate_id": {"type": "string", "minLength": 1},
+    "revision": {"type": "integer", "minimum": 1},
+    "status": {"enum": ["candidate", "approved"]},
+    "problem_id": {"type": "string", "minLength": 1},
+    "task_scope": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "base_profile": {"const": "retrieval_v8_5_refine_then_lock"},
+    "diagnosis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["first_divergence", "responsible_module", "runtime_observable", "repair_surfaces"],
+      "properties": {
+        "first_divergence": {"type": "string", "minLength": 1},
+        "responsible_module": {"type": "string", "minLength": 1},
+        "runtime_observable": {"const": true},
+        "repair_surfaces": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["component_id", "type", "task_scope", "priority", "state_namespace", "claims", "config", "artifacts"],
+        "properties": {
+          "component_id": {"type": "string", "minLength": 1},
+          "type": {
+            "enum": [
+              "prompt_lesson",
+              "criterion_overlay",
+              "bounded_transition_gate",
+              "swing_visual_binding_gate",
+              "counting_event_ledger",
+              "video_repick_event_ledger",
+              "video_repick_grounding_recovery_gate",
+              "unmask_pickup_grounding_recovery_gate",
+              "button_swap_press_grounding_recovery_gate",
+              "pickhighlight_pickup_grounding_recovery_gate",
+              "retrieval_overlay",
+              "action_canonicalizer",
+              "reinforcement_overlay",
+              "python_plugin",
+              "core_harness_patch"
+            ]
+          },
+          "task_scope": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "priority": {"type": "integer"},
+          "state_namespace": {"type": ["string", "null"]},
+          "claims": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "config": {"type": "object"},
+          "artifacts": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["path", "sha256"],
+              "properties": {
+                "path": {"type": "string", "minLength": 1},
+                "sha256": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "authoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["skill_name", "source", "analysis_inputs", "runtime_uses_episode_identity", "offline_acceptance_verifier_modified"],
+      "properties": {
+        "skill_name": {"const": "self-evolve-intervention-author"},
+        "source": {"type": "string", "minLength": 1},
+        "analysis_inputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["dataset_split", "episode_id"],
+            "properties": {
+              "dataset_split": {"enum": ["train", "val"]},
+              "episode_id": {"type": "integer", "minimum": 0}
+            }
+          }
+        },
+        "runtime_uses_episode_identity": {"const": false},
+        "offline_acceptance_verifier_modified": {"const": false}
+      }
+    }
+  }
+}

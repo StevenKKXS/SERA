@@ -1,0 +1,53 @@
+{
+  "version": "robomme-action-success-criteria-v10-pickhighlight-instances",
+  "extends": "action_success_criteria_v9_pickhighlight_button.json",
+  "replace_criteria": [],
+  "add_criteria": [
+    {
+      "criterion_id": "pickhighlight_put_down_stable_release",
+      "semantic_action": "place_highlighted_cube_on_table",
+      "applies_to_tasks": ["PickHighlight"],
+      "previous_subtask_patterns": [
+        "^place the cube onto the table$"
+      ],
+      "benchmark_note": "Retire a completed PickHighlight target only after stable table support, open-gripper decoupling, and a visible withdrawal gap. The harness then executes exactly one additional canonical place chunk so the next pickup does not begin while the gripper is still surrounding the retired cube.",
+      "success_conditions": [
+        "The previously held cube is visibly supported by the table rather than airborne or stuck to the gripper.",
+        "The gripper is visibly open.",
+        "The cube no longer follows the gripper and a visible separation gap develops as the gripper withdraws.",
+        "The released cube remains stationary across multiple recent frames."
+      ],
+      "insufficient_evidence": [
+        "The fingers open but the cube remains airborne, wedged, or coupled to the gripper.",
+        "The cube only touches the table transiently and still moves with the gripper.",
+        "The gripper remains wrapped around or immediately touching the cube without a persistent withdrawal gap.",
+        "Release is inferred from one occluded frame without later stable support evidence."
+      ],
+      "required_checks": [
+        {
+          "check_id": "cube_table_supported",
+          "question": "Is the previously held cube clearly supported by the table?"
+        },
+        {
+          "check_id": "gripper_visibly_open",
+          "question": "Is the gripper visibly open after placing the cube?"
+        },
+        {
+          "check_id": "cube_decoupled_with_gap",
+          "question": "Does the cube remain behind while the gripper withdraws, with a visible gap between them?"
+        },
+        {
+          "check_id": "released_cube_stable",
+          "question": "Does the table-supported cube remain stationary across multiple recent frames?"
+        }
+      ],
+      "transition_policy": {
+        "on_partial_or_uncertain": "continue_same_canonical_place_instruction",
+        "on_satisfied": "retire_target_then_execute_one_release_margin_chunk",
+        "confirmation_retries": 0
+      },
+      "uncertainty_policy": "repeat_canonical_place_until_stable_release",
+      "executor_instruction_policy": "use_only_the_existing_canonical_place_cube_on_table_skill"
+    }
+  ]
+}

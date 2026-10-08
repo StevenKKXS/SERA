@@ -1,0 +1,45 @@
+{
+  "version": "robomme-action-success-criteria-v1",
+  "criteria": [
+    {
+      "criterion_id": "pickup_container_strict_clearance",
+      "semantic_action": "pickup_container",
+      "previous_subtask_patterns": [
+        "^pick up the container(?: at <[0-9]+, [0-9]+>)?(?: that hides the (?:red|green|blue) cube)?$"
+      ],
+      "benchmark_note": "This benchmark uses a stricter pickup-completion criterion than ordinary human visual judgment. A container that appears slightly lifted, or merely reveals the hidden cube, may still be incomplete.",
+      "success_conditions": [
+        "The intended container is securely held by the gripper.",
+        "The hidden cube is fully visible.",
+        "The container is held conspicuously high, with clear and generous vertical separation between the bottom of the container and the cube/table region.",
+        "The elevated state and clear separation are sustained across multiple recent frames rather than appearing in one ambiguous frame."
+      ],
+      "insufficient_evidence": [
+        "The hidden cube merely starts becoming visible.",
+        "The container tilts, shifts, or is only slightly separated from the table.",
+        "The apparent lift height or separation is visually marginal.",
+        "The lift is visible only in one uncertain or heavily occluded frame."
+      ],
+      "required_checks": [
+        {
+          "check_id": "correct_container_held",
+          "question": "Is the intended container securely held rather than merely contacted or tilted?"
+        },
+        {
+          "check_id": "hidden_cube_fully_visible",
+          "question": "Is the hidden cube fully visible rather than only beginning to appear?"
+        },
+        {
+          "check_id": "clear_generous_vertical_separation",
+          "question": "Is there clear and generous vertical separation between the container bottom and the cube/table region?"
+        },
+        {
+          "check_id": "sustained_across_recent_frames",
+          "question": "Is the elevated state sustained across multiple recent synchronized observations?"
+        }
+      ],
+      "uncertainty_policy": "continue_current_semantic_subtask",
+      "executor_instruction_policy": "repeat_canonical_pickup_instruction"
+    }
+  ]
+}

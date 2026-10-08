@@ -1,0 +1,52 @@
+{
+  "version": "move-cube-oracle-skills-v1",
+  "task": "MoveCube",
+  "source": "third_party/robomme_benchmark/src/robomme/robomme_env/MoveCube.py subgoal_segment fields",
+  "methods": {
+    "direct_gripper_push": {
+      "description": "Keep the cube on the table and push it using the closed gripper.",
+      "skills": [
+        {
+          "skill_id": "direct_gripper_push_cube_to_target",
+          "canonical_template": "Close the gripper and push the cube at <point_1> to the target at <point_2>",
+          "point_roles": ["cube", "target"],
+          "completion_condition": "The cube is visibly on the target while remaining tabletop-supported."
+        }
+      ]
+    },
+    "peg_push": {
+      "description": "Pick up the peg, then use it to hook/push the cube to the target.",
+      "skills": [
+        {
+          "skill_id": "pick_up_peg",
+          "canonical_template": "Pick up the peg at <point_1>",
+          "point_roles": ["peg"],
+          "completion_condition": "The peg is securely held by the gripper."
+        },
+        {
+          "skill_id": "hook_cube_to_target_with_peg",
+          "canonical_template": "Hook the cube at <point_1> to the target at <point_2> with the peg",
+          "point_roles": ["cube", "target"],
+          "completion_condition": "The cube is visibly on the target after being moved with the held peg."
+        }
+      ]
+    },
+    "grasp_putdown": {
+      "description": "Pick up the cube and place it onto the target.",
+      "skills": [
+        {
+          "skill_id": "pick_up_cube",
+          "canonical_template": "Pick up the cube at <point_1>",
+          "point_roles": ["cube"],
+          "completion_condition": "The cube is securely grasped and lifted from the table."
+        },
+        {
+          "skill_id": "place_cube_onto_target",
+          "canonical_template": "Place the cube onto the target at <point_1>",
+          "point_roles": ["target"],
+          "completion_condition": "The cube is visibly supported by the target."
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "version": "robomme-action-success-criteria-v5-identity-pickup-release",
+  "criteria": [
+    {
+      "criterion_id": "pickup_container_identity_and_separation",
+      "semantic_action": "pickup_container",
+      "previous_subtask_patterns": [
+        "^pick up the container(?: at <[0-9]+, [0-9]+>)?(?: that hides the (?:red|green|blue) cube)?$"
+      ],
+      "benchmark_note": "Judge physical lift and task-target identity separately. A lift is complete only after the same bound container is securely airborne and visibly separated from the requested colored cube. Lifting a different container is a recovery condition, never task progress.",
+      "success_conditions": [
+        "The moving container is the same container bound before the hazardous pickup was issued.",
+        "The newly exposed cube is unambiguously the requested color; unknown color is not a match.",
+        "The requested cube is fully exposed and a clear persistent visual separation exists between it and the lifted container.",
+        "The bound container moves rigidly with the closed gripper and remains securely airborne across multiple recent observations."
+      ],
+      "insufficient_evidence": [
+        "A container is airborne but its identity differs from the bound target or cannot be related to the bound target.",
+        "The revealed cube color is unknown, ambiguous, or different from the requested color.",
+        "The cube is only a sliver, still overlapped by the container, or lacks a persistent visible gap.",
+        "The container only slides, tilts, or briefly moves in one ambiguous frame."
+      ],
+      "required_checks": [
+        {
+          "check_id": "same_bound_container",
+          "question": "Is the moving or held container the same target identity that was bound before this pickup began?"
+        },
+        {
+          "check_id": "requested_cube_color_matches",
+          "question": "Is the newly exposed cube unambiguously the requested color stored in active_target_binding?"
+        },
+        {
+          "check_id": "full_persistent_cube_container_separation",
+          "question": "Is the requested cube fully visible with a clear separation from the container that persists across several recent frames?"
+        },
+        {
+          "check_id": "secure_sustained_airborne_hold",
+          "question": "Does the same bound container move rigidly with the closed gripper and remain securely airborne across several recent frames?"
+        }
+      ],
+      "wrong_target_recovery": {
+        "trigger_check_id": "requested_cube_color_matches",
+        "trigger_verdict": "no",
+        "allowed_successor_patterns": ["^put down the container$"]
+      },
+      "uncertainty_policy": "continue_current_pickup_without_advancing_task_phase",
+      "executor_instruction_policy": "repeat_canonical_pickup_until_strictly_verified_or_put_down_a_verified_wrong_target"
+    },
+    {
+      "criterion_id": "put_down_container_stable_release",
+      "semantic_action": "put_down_container",
+      "previous_subtask_patterns": ["^put down the container$"],
+      "benchmark_note": "Opening the gripper alone is not release. The previously held container must become table-supported, decouple from the withdrawing gripper, and remain stable.",
+      "success_conditions": [
+        "The previously held container is visibly supported by the table rather than airborne or stuck to the gripper.",
+        "The gripper is visibly open.",
+        "The container no longer follows the gripper as the gripper withdraws and a visible gap develops.",
+        "The released container remains stationary across multiple recent frames."
+      ],
+      "insufficient_evidence": [
+        "The fingers open but the container remains airborne, wedged, or coupled to the gripper.",
+        "The container is only touching the table transiently and still moves with the gripper.",
+        "Release is inferred from one occluded frame without later stationary support evidence."
+      ],
+      "required_checks": [
+        {
+          "check_id": "container_table_supported",
+          "question": "Is the previously held container clearly supported by the table?"
+        },
+        {
+          "check_id": "gripper_visibly_open",
+          "question": "Is the gripper visibly open after placing the container?"
+        },
+        {
+          "check_id": "container_decoupled_with_gap",
+          "question": "Does the container remain behind while the gripper withdraws, with a visible gap between them?"
+        },
+        {
+          "check_id": "released_container_stable",
+          "question": "Does the table-supported container remain stationary across multiple recent frames?"
+        }
+      ],
+      "uncertainty_policy": "repeat_canonical_put_down",
+      "executor_instruction_policy": "repeat_canonical_put_down_until_stable_release"
+    },
+    {
+      "criterion_id": "press_button_v6_visual_event",
+      "semantic_action": "press_button",
+      "previous_subtask_patterns": [
+        "^press (?:the )?(?:(?:first|second) )?button(?: at <[0-9]+, [0-9]+>)?$"
+      ],
+      "benchmark_note": "Button travel is millimeter-scale and may rebound or be occluded. Judge a physically consistent button-local press event without using unrelated container appearance as evidence.",
+      "success_conditions": [
+        "The recent sequence shows a target-aligned press-like interaction at the intended button.",
+        "The interaction shows cap travel or an aligned approach/contact/downstroke followed by withdrawal without evidence of a miss."
+      ],
+      "insufficient_evidence": [
+        "The gripper only approaches, hovers, or withdraws without a button-local press-like interaction.",
+        "The apparent interaction is visibly offset from the intended button.",
+        "Container appearance or motion never proves button actuation."
+      ],
+      "required_checks": [
+        {
+          "check_id": "button_local_press_like_interaction",
+          "question": "Does the recent sequence show a press-like interaction aligned with the intended button?"
+        },
+        {
+          "check_id": "physically_consistent_press_completion",
+          "question": "Is there visible cap travel or a physically consistent downstroke followed by withdrawal without evidence of a miss?"
+        }
+      ],
+      "unrelated_scene_policy": "Container appearance or motion may update target identity memory but never contributes button-completion evidence.",
+      "harness_confirmation_policy": "The first satisfied decision is a candidate; require one additional canonical press chunk before advancing.",
+      "uncertainty_policy": "continue_current_semantic_subtask",
+      "executor_instruction_policy": "repeat_canonical_button_instruction"
+    }
+  ]
+}

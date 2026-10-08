@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["strategy_summary", "selected"],
+  "properties": {
+    "strategy_summary": {"type": "string", "minLength": 1},
+    "selected": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["candidate_id", "risk", "failure_hypothesis", "observable_rationale"],
+        "properties": {
+          "candidate_id": {"type": "string", "pattern": "^C[0-9]{2}$"},
+          "risk": {"type": "string", "enum": ["high", "medium", "uncertain"]},
+          "failure_hypothesis": {"type": "string", "minLength": 1},
+          "observable_rationale": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

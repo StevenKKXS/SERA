@@ -1,0 +1,30 @@
+Fixed task description obtained from the initial demonstration:
+{detailed_task_description}
+
+Immutable planner guidance obtained from init processing:
+{planner_guidance}
+
+Previous cumulative progress:
+{previous_progress}
+
+Subtask executed during the recent observations:
+{previous_subtask}
+
+Harness-maintained exploration control state:
+{exploration_control_state}
+
+Relevant episode-local executor lessons:
+{relevant_lessons}
+
+Recent image manifest, in attachment order:
+{image_manifest}
+
+Image identifiers beginning with `r_f` are recent front-camera observations. Image identifiers beginning with `r_w` are synchronized recent wrist-camera observations. Images within each view are chronological.
+
+First classify the effect of the previously executed subtask in recent_status and explain the visual evidence in recent_outcome. Then rewrite updated_progress, preserve or update the stable skill_key, describe the current execution_state, and select exactly one next instruction candidate. Follow the supplied mode. In explore_instruction mode, use the lessons and remaining candidate budget; change wording or granularity without changing the semantic intent.
+
+The updated progress must be a compact, self-contained current state rather than a chronological log. Harness counters and lesson records are authoritative. Preserve confirmed durable information, correct it only when contradicted, and do not repeat the fixed task description.
+
+When grounding is needed, ground the actionable object or target in a recent front-camera image. Coordinates are normalized to the full image: x_norm and y_norm range from 0 to 999. Use <point_1> and <point_2> only when their corresponding entries are present in points.
+
+Return only the JSON object defined by the output schema.

@@ -1,0 +1,77 @@
+{
+  "version": "robomme-action-success-criteria-v3-v6-button-confirm",
+  "criteria": [
+    {
+      "criterion_id": "pickup_container_strict_clearance",
+      "semantic_action": "pickup_container",
+      "previous_subtask_patterns": [
+        "^pick up the container(?: at <[0-9]+, [0-9]+>)?(?: that hides the (?:red|green|blue) cube)?$"
+      ],
+      "benchmark_note": "This benchmark uses a stricter pickup-completion criterion than ordinary human visual judgment. A container that appears slightly lifted, or merely reveals the hidden cube, may still be incomplete.",
+      "success_conditions": [
+        "The intended container is securely held by the gripper.",
+        "The hidden cube is fully visible.",
+        "The container is held conspicuously high, with clear and generous vertical separation between the bottom of the container and the cube/table region.",
+        "The elevated state and clear separation are sustained across multiple recent frames rather than appearing in one ambiguous frame."
+      ],
+      "insufficient_evidence": [
+        "The hidden cube merely starts becoming visible.",
+        "The container tilts, shifts, or is only slightly separated from the table.",
+        "The apparent lift height or separation is visually marginal.",
+        "The lift is visible only in one uncertain or heavily occluded frame."
+      ],
+      "required_checks": [
+        {
+          "check_id": "correct_container_held",
+          "question": "Is the intended container securely held rather than merely contacted or tilted?"
+        },
+        {
+          "check_id": "hidden_cube_fully_visible",
+          "question": "Is the hidden cube fully visible rather than only beginning to appear?"
+        },
+        {
+          "check_id": "clear_generous_vertical_separation",
+          "question": "Is there clear and generous vertical separation between the container bottom and the cube/table region?"
+        },
+        {
+          "check_id": "sustained_across_recent_frames",
+          "question": "Is the elevated state sustained across multiple recent synchronized observations?"
+        }
+      ],
+      "uncertainty_policy": "continue_current_semantic_subtask",
+      "executor_instruction_policy": "repeat_canonical_pickup_instruction"
+    },
+    {
+      "criterion_id": "press_button_v6_visual_event",
+      "semantic_action": "press_button",
+      "previous_subtask_patterns": [
+        "^press (?:the )?(?:(?:first|second) )?button(?: at <[0-9]+, [0-9]+>)?$"
+      ],
+      "benchmark_note": "Button travel is millimeter-scale and may rebound or be occluded. Judge a physically consistent button-local press event without requiring direct visibility of the exact simulator depth.",
+      "success_conditions": [
+        "The recent sequence shows a target-aligned press-like interaction at the intended button rather than motion elsewhere.",
+        "The interaction is physically consistent with completed actuation: visible cap travel, or an aligned approach/contact/downstroke followed by withdrawal without evidence that the button was missed."
+      ],
+      "insufficient_evidence": [
+        "The gripper only approaches, hovers, or withdraws without a button-local press-like interaction.",
+        "The apparent interaction is visibly offset from or below the intended button.",
+        "Containers appear, move, or cover cubes; these observations may update object mapping but never prove button actuation.",
+        "Elapsed time, expected scene transitions, or robot motion elsewhere never proves button actuation."
+      ],
+      "required_checks": [
+        {
+          "check_id": "button_local_press_like_interaction",
+          "question": "Does the recent sequence show a press-like interaction aligned with the intended button rather than only approach, hover, or unrelated motion?"
+        },
+        {
+          "check_id": "physically_consistent_press_completion",
+          "question": "Is there visible cap travel, or a physically consistent aligned approach/contact/downstroke followed by withdrawal without evidence that the intended button was missed?"
+        }
+      ],
+      "unrelated_scene_policy": "Container appearance or motion may update object mapping but must not contribute evidence to either button check.",
+      "harness_confirmation_policy": "The first satisfied decision is a candidate. Repeat the same canonical press skill for one additional chunk; only another satisfied decision may advance.",
+      "uncertainty_policy": "continue_current_semantic_subtask",
+      "executor_instruction_policy": "repeat_canonical_button_instruction"
+    }
+  ]
+}

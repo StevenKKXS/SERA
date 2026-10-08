@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "bundle_id", "revision", "base_profile", "task_scope", "candidate_ids", "components", "bundle_sha256"],
+  "properties": {
+    "schema_version": {"const": "self-evolve-runtime-intervention-bundle-v1"},
+    "bundle_id": {"type": "string", "minLength": 1},
+    "revision": {"type": "integer", "minimum": 1},
+    "base_profile": {"const": "retrieval_v8_5_refine_then_lock"},
+    "task_scope": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "candidate_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "components": {"type": "array", "minItems": 1},
+    "bundle_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

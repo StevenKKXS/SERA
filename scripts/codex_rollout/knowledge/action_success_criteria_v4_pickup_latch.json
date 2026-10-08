@@ -1,0 +1,109 @@
+{
+  "version": "robomme-action-success-criteria-v4-pickup-evidence-latch",
+  "criteria": [
+    {
+      "criterion_id": "pickup_container_calibrated_lift",
+      "semantic_action": "pickup_container",
+      "previous_subtask_patterns": [
+        "^pick up the container(?: at <[0-9]+, [0-9]+>)?(?: that hides the (?:red|green|blue) cube)?$"
+      ],
+      "benchmark_note": "A successful pickup requires a real airborne lift, but it does not require an exaggerated or maximally high pose. Infer a secure hold under gripper occlusion when the intended container moves rigidly with the closed gripper while its hidden cube becomes fully exposed.",
+      "success_conditions": [
+        "The intended container, rather than a distractor, moves as one object with the closed gripper; direct finger contact may be occluded.",
+        "The hidden target cube is fully exposed rather than visible only as a small sliver.",
+        "The container has clearly left its original table-supported pose and is airborne; a clear task-level lift is enough and no exaggerated generous gap is required.",
+        "The held, airborne state persists across several recent frames, or is consistent with positive pickup evidence accumulated by the harness across consecutive chunks."
+      ],
+      "insufficient_evidence": [
+        "The gripper only approaches or closes while the container remains stationary on the table.",
+        "The container only slides, tilts, or exposes a small cube sliver without moving rigidly with the gripper.",
+        "The apparent lift occurs in one ambiguous frame and is followed by an explicit loss of grasp or return to table support.",
+        "Motion of another container never supplies evidence for the intended target."
+      ],
+      "required_checks": [
+        {
+          "check_id": "target_coupled_to_closed_gripper",
+          "question": "Does the intended container move rigidly with the closed gripper across the recent sequence, allowing secure holding to be inferred despite local occlusion?"
+        },
+        {
+          "check_id": "hidden_cube_fully_exposed",
+          "question": "Is the intended hidden cube fully exposed rather than only beginning to appear?"
+        },
+        {
+          "check_id": "clear_airborne_displacement",
+          "question": "Has the intended container clearly left its original table-supported pose and become airborne, without requiring an exaggerated lift height?"
+        },
+        {
+          "check_id": "sustained_or_accumulated_hold",
+          "question": "Is the held airborne state sustained across several recent frames or supported by the supplied accumulated pickup evidence without explicit regression?"
+        }
+      ],
+      "evidence_accumulation_policy": {
+        "required_consecutive_candidate_rounds": 2,
+        "candidate_requirements": [
+          {
+            "check_id": "target_coupled_to_closed_gripper",
+            "allowed_verdicts": ["yes", "uncertain"]
+          },
+          {
+            "check_id": "hidden_cube_fully_exposed",
+            "allowed_verdicts": ["yes"]
+          },
+          {
+            "check_id": "clear_airborne_displacement",
+            "allowed_verdicts": ["yes", "uncertain"]
+          },
+          {
+            "check_id": "sustained_or_accumulated_hold",
+            "allowed_verdicts": ["yes", "uncertain"]
+          }
+        ],
+        "hard_reset_if_all": [
+          {
+            "check_id": "target_coupled_to_closed_gripper",
+            "verdict": "no"
+          },
+          {
+            "check_id": "clear_airborne_displacement",
+            "verdict": "no"
+          }
+        ],
+        "instruction": "A candidate streak is only cross-chunk support, not permission to fabricate current visual evidence. Once completion_latched is true, the accumulated action result may advance to a successor unless the current chunk explicitly shows loss of grasp and return to table support."
+      },
+      "uncertainty_policy": "accumulate_consistent_evidence_without_requiring_exaggerated_height",
+      "executor_instruction_policy": "repeat_canonical_pickup_instruction_until_satisfied_or_latched"
+    },
+    {
+      "criterion_id": "press_button_v6_visual_event",
+      "semantic_action": "press_button",
+      "previous_subtask_patterns": [
+        "^press (?:the )?(?:(?:first|second) )?button(?: at <[0-9]+, [0-9]+>)?$"
+      ],
+      "benchmark_note": "Button travel is millimeter-scale and may rebound or be occluded. Judge a physically consistent button-local press event without requiring direct visibility of the exact simulator depth.",
+      "success_conditions": [
+        "The recent sequence shows a target-aligned press-like interaction at the intended button rather than motion elsewhere.",
+        "The interaction is physically consistent with completed actuation: visible cap travel, or an aligned approach/contact/downstroke followed by withdrawal without evidence that the button was missed."
+      ],
+      "insufficient_evidence": [
+        "The gripper only approaches, hovers, or withdraws without a button-local press-like interaction.",
+        "The apparent interaction is visibly offset from or below the intended button.",
+        "Containers appear, move, or cover cubes; these observations may update object mapping but never prove button actuation.",
+        "Elapsed time, expected scene transitions, or robot motion elsewhere never proves button actuation."
+      ],
+      "required_checks": [
+        {
+          "check_id": "button_local_press_like_interaction",
+          "question": "Does the recent sequence show a press-like interaction aligned with the intended button rather than only approach, hover, or unrelated motion?"
+        },
+        {
+          "check_id": "physically_consistent_press_completion",
+          "question": "Is there visible cap travel, or a physically consistent aligned approach/contact/downstroke followed by withdrawal without evidence that the intended button was missed?"
+        }
+      ],
+      "unrelated_scene_policy": "Container appearance or motion may update object mapping but must not contribute evidence to either button check.",
+      "harness_confirmation_policy": "The first satisfied decision is a candidate. Repeat the same canonical press skill for one additional chunk; only another satisfied decision may advance.",
+      "uncertainty_policy": "continue_current_semantic_subtask",
+      "executor_instruction_policy": "repeat_canonical_button_instruction"
+    }
+  ]
+}

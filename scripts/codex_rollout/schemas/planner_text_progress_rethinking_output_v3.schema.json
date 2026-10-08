@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "recent_status",
+    "recent_outcome",
+    "updated_progress",
+    "current_subtask_template",
+    "points"
+  ],
+  "properties": {
+    "recent_status": {
+      "type": "string",
+      "enum": [
+        "initial",
+        "progressing",
+        "completed",
+        "uncertain",
+        "stagnant",
+        "regressed"
+      ]
+    },
+    "recent_outcome": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 320
+    },
+    "updated_progress": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1600
+    },
+    "current_subtask_template": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "points": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "object_description",
+          "source_frame_id",
+          "x_norm",
+          "y_norm"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": ["point_1", "point_2"]
+          },
+          "object_description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "source_frame_id": {
+            "type": "string",
+            "pattern": "^r_f[0-9]+$"
+          },
+          "x_norm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 999
+          },
+          "y_norm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 999
+          }
+        }
+      }
+    }
+  }
+}

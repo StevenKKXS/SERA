@@ -1,0 +1,35 @@
+{
+  "version": "robomme-action-success-criteria-v3-v6-pickup-probe",
+  "criteria": [
+    {
+      "criterion_id": "pickup_container_benchmark_lift",
+      "semantic_action": "pickup_container",
+      "previous_subtask_patterns": [
+        "^pick up the container(?: at <[0-9]+, [0-9]+>)?(?: that hides the (?:red|green|blue) cube)?$"
+      ],
+      "benchmark_note": "RoboMME accepts a container pickup when the container center rises above 0.15 m. This value is not directly observable from pixels, so judge the corresponding visual event without imposing the older generous-clearance requirement.",
+      "success_conditions": [
+        "The intended container, rather than a distractor, moves upward with the gripper and is visibly airborne rather than merely contacted or tilted.",
+        "The recent sequence shows a clear threshold-like lift from the resting pose: the container body is substantially elevated above its original table-supported level, not just separated by a marginal gap. Ordinary clear pickup height is sufficient; conspicuously high or generous clearance is not required."
+      ],
+      "insufficient_evidence": [
+        "The gripper only approaches, closes around, contacts, or tilts the container.",
+        "Only a small or visually marginal gap appears while the container remains near its resting level.",
+        "The hidden cube becoming partially or fully visible by itself does not establish sufficient lift height.",
+        "Apparent elevation is confined to one ambiguous or heavily occluded frame."
+      ],
+      "required_checks": [
+        {
+          "check_id": "intended_container_airborne_with_gripper",
+          "question": "Does the intended container move upward with the gripper and appear airborne rather than merely contacted, tilted, or table-supported?"
+        },
+        {
+          "check_id": "clear_benchmark_like_lift_height",
+          "question": "Across the recent sequence, is the container body clearly and substantially elevated from its resting table-supported level, beyond a merely marginal gap, without requiring extra generous clearance?"
+        }
+      ],
+      "uncertainty_policy": "continue_current_semantic_subtask",
+      "executor_instruction_policy": "repeat_canonical_pickup_instruction"
+    }
+  ]
+}

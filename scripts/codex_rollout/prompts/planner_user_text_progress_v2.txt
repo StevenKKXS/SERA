@@ -1,0 +1,21 @@
+Fixed task description obtained from the initial demonstration:
+{detailed_task_description}
+
+Previous cumulative progress:
+{previous_progress}
+
+Subtask executed during the recent observations:
+{previous_subtask}
+
+Recent image manifest, in attachment order:
+{image_manifest}
+
+Image identifiers beginning with `r_f` are recent front-camera observations. Image identifiers beginning with `r_w` are synchronized recent wrist-camera observations. Images within each view are chronological.
+
+Using the recent observations, first describe the outcome of the previously executed subtask. Then update the cumulative progress and determine the single semantic subtask to execute next.
+
+The updated progress must be a compact self-contained description of the current task state. Preserve relevant confirmed information from the previous progress, but correct it when contradicted by recent visual evidence. Do not repeat the fixed task description and do not append a chronological action log.
+
+Spatial words such as left and right refer to the robot arm's perspective, not the viewer's image perspective. When grounding is needed, ground the actionable object or target in a recent front-camera image. Coordinates are normalized to the full image: `x_norm` increases from left to right, `y_norm` increases from top to bottom, and both range from 0 to 999. Ground the visual center of the actionable object or target.
+
+Return only the JSON object defined by the output schema. `recent_outcome` may state that no action has run yet, no progress was confirmed, or the previous attempt failed. `updated_progress` is the sole cross-round memory. `current_subtask_template` must contain exactly one immediately executable semantic subtask. Use `<point_1>` and `<point_2>` only when their corresponding entries are present in `points`.

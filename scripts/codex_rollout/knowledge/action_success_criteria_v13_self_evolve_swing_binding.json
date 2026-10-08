@@ -1,0 +1,48 @@
+{
+  "version": "robomme-action-success-criteria-v13-self-evolve-swing-binding",
+  "extends": "action_success_criteria_v11_self_evolve_movecube.json",
+  "replace_criteria": [],
+  "add_criteria": [
+    {
+      "criterion_id": "swing_target_side_visual_binding",
+      "semantic_action": "swing_visit_bound_target_side",
+      "applies_to_tasks": [
+        "SwingXtimes"
+      ],
+      "previous_subtask_patterns": [
+        "^move to the top of the (?:right|left)-side target(?: at <[0-9]+, [0-9]+>)? for the (?:first|second|third) time$"
+      ],
+      "success_conditions": [
+        "The physical right-side target is bound to the circular target in the image-left half of the fixed front camera, and the physical left-side target is bound to the circular target in the image-right half.",
+        "The grounded point for a right-side instruction lies on the image-left circular target; the grounded point for a left-side instruction lies on the image-right circular target.",
+        "Later cycles preserve the same two physical side bindings instead of swapping coordinates when an old target remains highlighted."
+      ],
+      "insufficient_evidence": [
+        "The side name is inferred from whichever target is currently red without checking its stable front-camera side.",
+        "A right-side instruction points into the image-right half or a left-side instruction points into the image-left half.",
+        "The previous target's coordinate is reused for the opposite side in the next half-cycle."
+      ],
+      "required_checks": [
+        {
+          "check_id": "swing_named_side_matches_front_camera_half",
+          "question": "Does the named physical side match the task-level front-camera binding: right target in image-left, left target in image-right?"
+        },
+        {
+          "check_id": "swing_point_is_on_named_circular_target",
+          "question": "Is the proposed point visibly centered on the circular target in the correct image half, rather than on the opposite target, cube, or button?"
+        },
+        {
+          "check_id": "swing_side_binding_preserved_across_cycles",
+          "question": "Is this the same physical side binding used for this side earlier, without swapping because of a lingering highlight?"
+        }
+      ],
+      "transition_policy": {
+        "on_partial_or_uncertain": "reinspect_current_front_frames_and_retry_the_same_named_side_with_the_correct_bound_target",
+        "on_satisfied": "allow_the_ordered_target_visit_or_next_phase",
+        "maximum_blocked_transition_attempts": 2
+      },
+      "uncertainty_policy": "never_execute_a_swing_target_point_whose_image_half_conflicts_with_the_named_side",
+      "executor_instruction_policy": "use_only_the_existing_canonical_named_side_target_skill_with_a_current_front_frame_point"
+    }
+  ]
+}

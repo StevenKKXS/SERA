@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["failure_type", "responsible_module", "first_divergence_round", "analysis_summary", "expected_result", "observed_result", "causal_evidence", "alternative_causes", "experience_eligibility", "candidate_experience", "confidence", "causal_chain"],
+  "properties": {
+    "failure_type": {"enum": ["task_understanding_error", "planning_error", "grounding_error", "completion_error", "executor_lapse", "recovery_failure", "observation_insufficient", "capability_limit", "unknown"]},
+    "responsible_module": {"enum": ["init_processor", "planner", "grounding", "completion_judge", "executor", "recovery_policy", "observation_pipeline", "planner_executor_interface", "unknown"]},
+    "first_divergence_round": {"type": ["integer", "null"], "minimum": 0},
+    "analysis_summary": {"type": "string", "minLength": 1},
+    "expected_result": {"type": "string", "minLength": 1},
+    "observed_result": {"type": "string", "minLength": 1},
+    "causal_evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source", "reference", "observation"],
+        "properties": {
+          "source": {"enum": ["planner_trace", "rollout_video", "episode_summary", "evaluator_diagnostic"]},
+          "reference": {"type": "string", "minLength": 1},
+          "observation": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "alternative_causes": {"type": "array", "items": {"type": "string"}},
+    "experience_eligibility": {"enum": ["eligible_candidate", "needs_more_evidence", "not_experience_problem", "evaluator_only"]},
+    "candidate_experience": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["condition", "lesson", "recommended_skill_or_policy", "success_evidence", "forbidden_behavior", "scope"],
+      "properties": {
+        "condition": {"type": "string"},
+        "lesson": {"type": "string"},
+        "recommended_skill_or_policy": {"type": "string"},
+        "success_evidence": {"type": "array", "items": {"type": "string"}},
+        "forbidden_behavior": {"type": "array", "items": {"type": "string"}},
+        "scope": {"enum": ["episode", "task", "task_family", "global", "none"]}
+      }
+    },
+    "confidence": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+    "causal_chain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["physical_first_divergence", "task_progress_divergence", "terminal_failure", "causal_link_evidence"],
+      "properties": {
+        "physical_first_divergence": {"type": "string", "minLength": 1},
+        "task_progress_divergence": {"type": "string", "minLength": 1},
+        "terminal_failure": {"type": "string", "minLength": 1},
+        "causal_link_evidence": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}

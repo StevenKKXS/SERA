@@ -1,0 +1,46 @@
+{
+  "version": "robomme-action-success-criteria-v11-self-evolve-movecube",
+  "extends": "action_success_criteria_v10_pickhighlight_instances.json",
+  "replace_criteria": [],
+  "add_criteria": [
+    {
+      "criterion_id": "move_cube_peg_pickup_held_motion",
+      "semantic_action": "move_cube_pick_up_peg",
+      "applies_to_tasks": ["MoveCube"],
+      "previous_subtask_patterns": [
+        "^pick up the peg at <[0-9]+, [0-9]+>$"
+      ],
+      "success_conditions": [
+        "The peg is visibly retained between the gripper fingers rather than merely touched or occluded.",
+        "Across separated recent observations, the peg translates together with the gripper.",
+        "The peg is no longer visibly left behind with stable tabletop support while the gripper moves."
+      ],
+      "insufficient_evidence": [
+        "The fingers close around or occlude the peg in only one view without later held-together motion.",
+        "The gripper moves but the peg remains on the table or its motion cannot be verified.",
+        "Contact alone is treated as pickup completion."
+      ],
+      "required_checks": [
+        {
+          "check_id": "peg_retained_between_fingers",
+          "question": "Is the peg visibly retained between the gripper fingers rather than merely touched or occluded?"
+        },
+        {
+          "check_id": "peg_moves_with_gripper_across_frames",
+          "question": "Does the peg translate together with the gripper across separated recent observations?"
+        },
+        {
+          "check_id": "peg_not_left_table_supported",
+          "question": "Is there positive evidence that the peg was not left behind with stable tabletop support as the gripper moved?"
+        }
+      ],
+      "transition_policy": {
+        "on_partial_or_uncertain": "continue_same_canonical_pickup_instruction",
+        "on_satisfied": "allow_transition_to_hook_cube",
+        "maximum_blocked_transition_attempts": 2
+      },
+      "uncertainty_policy": "do_not_advance_from_pickup_to_hook_on_closure_or_occlusion_alone",
+      "executor_instruction_policy": "use_only_the_existing_canonical_pick_up_peg_skill"
+    }
+  ]
+}

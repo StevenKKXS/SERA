@@ -1,0 +1,55 @@
+{
+  "schema_version": "self-evolve-v4-candidate-intervention-v1",
+  "candidate_id": "movecube_v1_compatible",
+  "revision": 1,
+  "status": "candidate",
+  "problem_id": "MoveCube-P-peg-pickup-unverified",
+  "task_scope": ["MoveCube"],
+  "base_profile": "retrieval_v8_5_refine_then_lock",
+  "diagnosis": {
+    "first_divergence": "The planner advances from peg pickup before held-together motion is visible.",
+    "responsible_module": "completion_judge_and_transition_policy",
+    "runtime_observable": true,
+    "repair_surfaces": ["criterion_overlay", "bounded_transition_gate"]
+  },
+  "components": [
+    {
+      "component_id": "movecube_peg_pickup_criterion_v1",
+      "type": "criterion_overlay",
+      "task_scope": ["MoveCube"],
+      "priority": 10,
+      "state_namespace": null,
+      "claims": ["criterion:move_cube_peg_pickup_held_motion"],
+      "config": {},
+      "artifacts": {
+        "catalog": {
+          "path": "criteria_overlay.json",
+          "sha256": "AUTO"
+        }
+      }
+    },
+    {
+      "component_id": "movecube_peg_pickup_gate_v1",
+      "type": "bounded_transition_gate",
+      "task_scope": ["MoveCube"],
+      "priority": 20,
+      "state_namespace": "movecube_peg_pickup_gate_v1",
+      "claims": ["transition:MoveCube:peg_pickup_to_hook_cube"],
+      "config": {
+        "experience_id": "experience_121bab65ef1b",
+        "revision": 1,
+        "situation_class": "tool_pickup_unverified",
+        "criterion_id": "move_cube_peg_pickup_held_motion",
+        "max_blocked_transitions": 2
+      },
+      "artifacts": {}
+    }
+  ],
+  "authoring": {
+    "skill_name": "self-evolve-intervention-author",
+    "source": "behavior-compatible migration of retrieval_v8_5_self_evolve_v1",
+    "analysis_inputs": [],
+    "runtime_uses_episode_identity": false,
+    "offline_acceptance_verifier_modified": false
+  }
+}

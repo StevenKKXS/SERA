@@ -1,0 +1,31 @@
+Fixed task description obtained from the initial demonstration:
+{detailed_task_description}
+
+Immutable planner guidance obtained from init processing:
+{planner_guidance}
+
+Allowed executor skills for the demonstrated method:
+{allowed_executor_skills}
+
+Previous cumulative progress:
+{previous_progress}
+
+Skill executed during the recent observations:
+{previous_subtask}
+
+Harness-maintained exploration control state:
+{exploration_control_state}
+
+Relevant episode-local executor lessons:
+{relevant_lessons}
+
+Recent image manifest, in attachment order:
+{image_manifest}
+
+Image identifiers beginning with `r_f` are chronological front-camera observations. Identifiers beginning with `r_w` are synchronized wrist observations.
+
+Classify the effect of the previous skill, update the self-contained progress, and choose one allowed skill. Copy its canonical_template exactly and provide exactly the listed point roles. In exploration mode, adapt only by re-grounding, retrying the canonical skill, reusing a lesson, or moving between allowed semantic skills; never emit a finer motion primitive or a free-form paraphrase.
+
+Coordinates are normalized to the full recent front image: x_norm and y_norm range from 0 to 999. Use <point_1> and <point_2> only for their corresponding points.
+
+Return only the JSON object defined by the output schema.
