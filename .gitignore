@@ -221,3 +221,6 @@ __marimo__/
 /data/
 *.token
 auth.json
+
+# Local agent instructions
+[Aa][Gg][Ee][Nn][Tt][Ss].[Mm][Dd]
