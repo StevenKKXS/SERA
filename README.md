@@ -6,6 +6,8 @@
 
 University of Science and Technology of China · Shanghai Artificial Intelligence Laboratory · Shanghai Jiao Tong University · Mohamed bin Zayed University of Artificial Intelligence · Zhejiang University
 
+[![Papers with Code leaderboard ranking](https://paperswithcode.co/api/v1/papers/2610.29560/leaderboard-badge.svg?eval=41458&live=1)](https://paperswithcode.co/api/v1/papers/2610.29560/leaderboard-badge-link?eval=41458)
+
 <!-- Add the public paper and project-page links here when available. -->
 
 ## 🧭 Outline
